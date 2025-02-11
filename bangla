@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bangla Calculator</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+            margin: 0;
+        }
+
+        .calculator {
+            background-color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        #display {
+            width: 100%;
+            height: 50px;
+            background-color: #222;
+            color: #fff;
+            border: none;
+            text-align: right;
+            padding: 10px;
+            font-size: 24px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        button {
+            background-color: #444;
+            color: #fff;
+            border: none;
+            padding: 20px;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+
+        button.clear {
+            grid-column: span 4;
+            background-color: #ff4444;
+        }
+
+        button.clear:hover {
+            background-color: #ff6666;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <input type="text" id="display" disabled>
+        <div class="buttons">
+            <button onclick="appendToDisplay('৭')">৭</button>
+            <button onclick="appendToDisplay('৮')">৮</button>
+            <button onclick="appendToDisplay('৯')">৯</button>
+            <button onclick="appendOperator('/')">÷</button>
+
+            <button onclick="appendToDisplay('৪')">৪</button>
+            <button onclick="appendToDisplay('৫')">৫</button>
+            <button onclick="appendToDisplay('৬')">৬</button>
+            <button onclick="appendOperator('*')">×</button>
+
+            <button onclick="appendToDisplay('১')">১</button>
+            <button onclick="appendToDisplay('২')">২</button>
+            <button onclick="appendToDisplay('৩')">৩</button>
+            <button onclick="appendOperator('-')">−</button>
+
+            <button onclick="appendToDisplay('০')">০</button>
+            <button onclick="appendToDisplay('.')">.</button>
+            <button onclick="calculate()">=</button>
+            <button onclick="appendOperator('+')">+</button>
+
+            <button onclick="clearDisplay()" class="clear">C</button>
+        </div>
+    </div>
+
+    <script>
+        function appendToDisplay(value) {
+            document.getElementById('display').value += value;
+        }
+
+        function appendOperator(operator) {
+            let display = document.getElementById('display');
+            let lastChar = display.value.slice(-1);
+
+            if (['+', '-', '*', '/'].includes(lastChar)) {
+                return; // Prevent multiple consecutive operators
+            }
+
+            display.value += operator;
+        }
+
+        function clearDisplay() {
+            document.getElementById('display').value = '';
+        }
+
+        function calculate() {
+            try {
+                let expression = document.getElementById('display').value;
+
+                // Convert Bangla digits to Arabic digits
+                const banglaToEnglish = {
+                    '০': '0', '১': '1', '২': '2', '৩': '3', '৪': '4',
+                    '৫': '5', '৬': '6', '৭': '7', '৮': '8', '৯': '9'
+                };
+
+                expression = expression.replace(/[০-৯]/g, digit => banglaToEnglish[digit]);
+
+                // Replace symbols for evaluation
+                expression = expression.replace(/×/g, '*').replace(/÷/g, '/').replace(/−/g, '-');
+
+                let result = eval(expression);
+
+                // Convert Arabic digits back to Bangla
+                const englishToBangla = {
+                    '0': '০', '1': '১', '2': '২', '3': '৩', '4': '৪',
+                    '5': '৫', '6': '৬', '7': '৭', '8': '৮', '9': '৯'
+                };
+
+                document.getElementById('display').value = String(result).replace(/[0-9]/g, digit => englishToBangla[digit]);
+            } catch (e) {
+                document.getElementById('display').value = 'Error';
+            }
+        }
+    </script>
+</body>
+</html>
